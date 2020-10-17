@@ -79,3 +79,18 @@ A Functor instance must obey two laws:
 ```scala
 fa.map(x => x) = fa
 ``` 
+
+--- 
+
+# Applicative 
+Applicative  must obey three laws:
+            
+- Associativity: No matter the order in which you product together three values, the result is isomorphic
+  fa.product(fb).product(fc) ~ fa.product(fb.product(fc))
+  With map, this can be made into an equality with fa.product(fb).product(fc) = fa.product(fb.product(fc)).map { case (a, (b, c)) => ((a, b), c) }
+- Left identity: Zipping a value on the left with unit results in something isomorphic to the original value
+  pure(()).product(fa) ~ fa
+  As an equality: pure(()).product(fa).map(_._2) = fa
+- Right identity: Zipping a value on the right with unit results in something isomorphic to the original value
+  fa.product(pure(())) ~ fa
+  As an equality: fa.product(pure(())).map(_._1) = fa

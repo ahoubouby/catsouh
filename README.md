@@ -73,3 +73,17 @@ implicit val functorForOption: Functor[Option] = new Functor[Option] {
 
 - If you’ve ever found yourself working with nested data types such as Option[List[A]] or List[Either[String, Future[A]]] and tried to map over it, you’ve most likely found yourself doing something like _.map(_.map(_.map(f))). As it turns out, Functors compose, which means if F and G have Functor instances, then so does F[G[_]].
 - Such composition can be achieved via the Functor#compose method.
+
+# Applicative 
+#### Applicatives for effect management
+
+If we view Functor as the ability to work with a single effect, Applicative encodes working with multiple independent effects. Between product and map, we can take two separate effectful values and compose them. From there we can generalize to working with any N number of independent effects.
+```scala
+import cats.Applicative
+
+def product3[F[_]: Applicative, A, B, C](fa: F[A], fb: F[B], fc: F[C]): F[(A, B, C)] = {
+  val F = Applicative[F]
+  val fabc = F.product(F.product(fa, fb), fc)
+  F.map(fabc) { case ((a, b), c) => (a, b, c) }
+}
+```

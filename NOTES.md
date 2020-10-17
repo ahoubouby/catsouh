@@ -34,3 +34,32 @@ nested.map(_ + 1)
 // res2: cats.data.Nested[List,Option,Int] = Nested(List(Some(2), None, Some(3)))
 ```
 -- The Nested approach, being a distinct type from its constituents, will resolve the usual way modulo possible SI-2712 issues (which can be addressed through partial unification), but requires syntactic and runtime overhead from wrapping and unwrapping.
+# Applicative
+Applicative extends Functor with an ap and pure method.
+```scala
+import cats.Functor
+
+trait Applicative[F[_]] extends Functor[F] {
+  def ap[A, B](ff: F[A => B])(fa: F[A]): F[B]
+
+  def pure[A](a: A): F[A]
+
+  def map[A, B](fa: F[A])(f: A => B): F[B] = ap(pure(f))(fa)
+}
+```
+- pure wraps the value into the type constructor 
+#Applicatives compose
+Like Functor, Applicatives compose. If F and G have Applicative instances, then so does F[G[_]].
+```scala
+import cats.data.Nested
+import cats.implicits._
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
+val x: Future[Option[Int]] = Future.successful(Some(5))
+val y: Future[Option[Char]] = Future.successful(Some('a'))
+val composed = Applicative[Future].compose[Option].map2(x, y)(_ + _)
+// composed: scala.concurrent.Future[Option[Int]] = Future(<not completed>)
+
+val nested = Applicative[Nested[Future, Option, *]].map2(Nested(x), Nested(y))(_ + _)
+```
