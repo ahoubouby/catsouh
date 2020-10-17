@@ -63,3 +63,19 @@ val leftwards = List(1, 2, 3).foldLeft(0)(_ |+| _)
 val rightwards = List(1, 2, 3).foldRight(0)(_ |+| _)
 // rightwards: Int = 6
 ```
+
+#Laws
+Conceptually, all type classes come with laws. These laws constrain implementations for a given type and can be exploited and used to reason about generic code.
+
+---
+#Functor
+
+A Functor instance must obey two laws:
+- Composition: Mapping with f and then again with g is the same as mapping once with the composition of f and g
+  ```
+   fa.map(f).map(g) = fa.map(f.andThen(g)) 
+  ``
+- Identity: Mapping with the identity function is a no-op
+```scala
+fa.map(x => x) = fa
+``` 
