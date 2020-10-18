@@ -1,8 +1,14 @@
 package com.ahoubouby.applicative_traversable
 
-import cats.Functor
+import cats.Semigroupal
+import cats.Monad
+import cats.instances.list._ // for Monoid
+import cats.data.Validated
+import cats.instances.string._
+import cats.instances.either._
+import cats.instances.int._
 import cats.implicits._
-import cats.instances.either
+
 trait Applicative[F[_]] extends Functor[F] {
   def ap[A, B](ff: F[A => B])(fa: F[A]): F[B]
 
@@ -12,18 +18,31 @@ trait Applicative[F[_]] extends Functor[F] {
 }
 
 object Applicative {
-  // Example implementation for right-biased Either
-  /*implicit def applicativeForEither[L]: Applicative[Either[L, *]] = new Applicative[Either[L, *]] {
-    def product[A, B](fa: Either[L, A], fb: Either[L, B]): Either[L, (A, B)] = (fa, fb) match {
-      case (Right(a), Right(b)) => Right((a, b))
-      case (Left(l), _)         => Left(l)
-      case (_, Left(l))         => Left(l)
-    }
-    def pure[A](a: A): Either[L, A] = Right(a)
+  def main(args: Array[String]): Unit = {
+    import cats.Semigroupal
 
-    def map[A, B](fa: Either[L, A])(f: A => B): Either[L, B] = fa match {
-      case Right(a) => Right(f(a))
-      case Left(l)  => Left(l)
-    }
-  }*/
+    def parseInt(value: String): Either[String, Int] =
+      Either.catchOnly[NumberFormatException](value.toInt).leftMap(_ => s"Couldn't read $value")
+
+    val res0 = for {
+      a <- parseInt("a")
+      b <- parseInt("b")
+      c <- parseInt("c")
+    } yield (a + b + c) // Left(Couldn't read a)
+    // its break at the first error not even use full
+
+    println(res0)
+    // correction
+    def product[M[_]: Monad, A, B](x: M[A], y: M[B]): M[(A, B)] =
+      for {
+        a <- x
+        b <- y
+      } yield (a, b)
+
+//    type AllErrorsOr[A] = Validated[List[String], A]
+
+    //Semigroupal[AllErrorsOr]
+    //.product(Validated.invalid(List("Error 1")), Validated.invalid(List("Error 2")))
+
+  }
 }
