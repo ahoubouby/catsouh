@@ -2,11 +2,6 @@ package com.ahoubouby.applicative_traversable
 
 import cats.Semigroupal
 import cats.Monad
-import cats.instances.list._ // for Monoid
-import cats.data.Validated
-import cats.instances.string._
-import cats.instances.either._
-import cats.instances.int._
 import cats.implicits._
 
 trait Applicative[F[_]] extends Functor[F] {
