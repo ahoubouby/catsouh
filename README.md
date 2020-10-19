@@ -87,3 +87,10 @@ def product3[F[_]: Applicative, A, B, C](fa: F[A], fb: F[B], fc: F[C]): F[(A, B,
   F.map(fabc) { case ((a, b), c) => (a, b, c) }
 }
 ```
+---
+# Foldable and Traverse
+- Foldable abstracts the familiar foldLeft and foldRight opera􏰀ons.
+- Traverse is a higher-level abstrac􏰀on that uses Applicatives to it-
+erate with less pain than folding.
+Note: foldLeft and foldRight are equivalent if our binary opera􏰀on is commuta􏰀ve.
+
