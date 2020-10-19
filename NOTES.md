@@ -63,3 +63,11 @@ val composed = Applicative[Future].compose[Option].map2(x, y)(_ + _)
 
 val nested = Applicative[Nested[Future, Option, *]].map2(Nested(x), Nested(y))(_ + _)
 ```
+---
+
+Foldable defines foldRight differently to foldLeft, in terms of the Eval
+```scala
+ def foldRight[A, B](fa: F[A], lb: Eval[B])
+                     (f: (A, Eval[B]) => Eval[B]): Eval[B]
+```
+using Eval means folding is always stack safe, even when the collec􏰀on’s de- fault defini􏰀on of foldRight is not.

@@ -94,3 +94,47 @@ def product3[F[_]: Applicative, A, B, C](fa: F[A], fb: F[B], fc: F[C]): F[(A, B,
 erate with less pain than folding.
 Note: foldLeft and foldRight are equivalent if our binary opera􏰀on is commuta􏰀ve.
 
+### foldable with cats 
+Cats’ Foldable abstracts foldLeft and foldRight into a type class.
+In- stances of Foldable define these two methods and inherit a host of derived methods.
+Cats provides out-of-the-box instances of Foldable for a handful of Scala data types: List, Vector, Stream, and Option.
+```scala
+import cats.Foldable
+import cats.instances.list._ // for Foldable
+val ints = List(1, 2, 3)
+Foldable[List].foldLeft(ints, 0)(_ + _)
+import cats.instances.option._ // for Foldable val maybeInt = Option(123)
+Foldable[Option].foldLeft(maybeInt, 10)(_ * _)
+// res3: Int = 1230
+```
+we can compose Foldables to support deep traversal of nested sequences:
+
+```scala
+import cats.instances.vector._ // for Monoid
+val ints = List(Vector(1, 2, 3), Vector(4, 5, 6))
+(Foldable[List] compose Foldable[Vector]).combineAll(ints)
+// res15: Int = 21
+```
+---
+# Traverse
+foldLeft and foldRight are flexible itera􏰀on methods but they require us to do a lot of work to define accumulators and combinator func􏰀ons. The Traverse type class is a higher level tool that leverages Applicatives to provide a more convenient, more lawful, pa􏰃ern for itera􏰀on.
+Cats provides instances of Traverse for List, Vector, Stream, Option, Ei- ther, and a variety of other types. We can summon instances as usual using Traverse.apply and use the traverse and sequence methods as described in the previous sec􏰀onction:
+```scala
+import cats.Traverse
+import cats.instances.future._ // for Applicative import cats.instances.list._ // for Traverse
+val totalUptime: Future[List[Int]] = Traverse[List].traverse(hostnames)(getUptime)
+Await.result(totalUptime, 1.second)
+// res1: List[Int] = List(1020, 960, 840)
+val numbers = List(Future(1), Future(2), Future(3))
+val numbers2: Future[List[Int]] =
+Traverse[List].sequence(numbers)
+Await.result(numbers2, 1.second)
+// res3: List[Int] = List(1, 2, 3)
+```
+There are also syntax versions of the methods, imported via cats.syntax.traverse
+```scala
+import cats.syntax.traverse._ // for sequence and traverse Await.result(hostnames.traverse(getUptime), 1.second)
+// res4: List[Int] = List(1020, 960, 840)
+Await.result(numbers.sequence, 1.second)
+// res5: List[Int] = List(1, 2, 3)
+```
