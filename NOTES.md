@@ -71,3 +71,9 @@ Foldable defines foldRight differently to foldLeft, in terms of the Eval
                      (f: (A, Eval[B]) => Eval[B]): Eval[B]
 ```
 using Eval means folding is always stack safe, even when the collec􏰀on’s de- fault defini􏰀on of foldRight is not.
+--- 
+# Monad#Composition 
+Composition
+Unlike Functors and Applicatives, not all Monads compose. This means that even if M[_] and N[_] are both Monads, M[N[_]] is not guaranteed to be a Monad.
+#Future 
+Future is a monad that sequences computa􏰀ons without worrying that they are asynchronous.

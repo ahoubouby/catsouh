@@ -94,3 +94,18 @@ Applicative  must obey three laws:
 - Right identity: Zipping a value on the right with unit results in something isomorphic to the original value
   fa.product(pure(())) ~ fa
   As an equality: fa.product(pure(())).map(_._1) = fa
+---
+#Monad Laws: 
+pure and flatMap must obey a set of laws that allow us to sequence opera􏰀ons freely without unintended glitches and side-effects:
+- Le􏰁 iden􏰄ty: calling pure and transforming the result with func is the same as calling func:
+```scala
+pure(a).flatMap(func) == func(a)
+```
+- Right iden􏰄ty: passing pure to flatMap is the same as doing nothing:
+```scala
+m.flatMap(pure) == m
+```
+- Associa􏰄vity: flatMapping over two func􏰀ons f and g is the same as flatMapping over f and then flatMapping over g:
+```scala
+m.flatMap(f).flatMap(g) == m.flatMap(x => f(x).flatMap(g))
+```

@@ -138,3 +138,9 @@ import cats.syntax.traverse._ // for sequence and traverse Await.result(hostname
 Await.result(numbers.sequence, 1.second)
 // res5: List[Int] = List(1, 2, 3)
 ```
+---
+#Monad (A monad is a mechanism for sequencing computa􏰄ons.)
+Monad extends the Applicative type class with a new function flatten. Flatten takes a value in a nested context (eg. F[F[A]] where F is the context) and “joins” the contexts together so that we have a single context (ie. F[A]).
+The name flatten should remind you of the functions of the same name on many classes in the standard library.
+# FlatMap
+flatMap is often considered to be the core function of Monad, and Cats follows this tradition by providing implementations of flatten and map derived from flatMap and pure.
