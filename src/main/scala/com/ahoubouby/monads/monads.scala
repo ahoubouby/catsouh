@@ -1,8 +1,8 @@
 package com.ahoubouby.monads
-import cats.{ Monad, _ }
 import cats.instances.list._
 import cats.instances.option._
-import cats.instances.vector._ // for Monad
+import cats.instances.vector._
+import cats.{ Monad, _ } // for Monad
 
 trait Monad[F[_]] {
   def pure[A](value: A): F[A]
@@ -68,5 +68,18 @@ object monads extends App {
   Monad[List].flatMap(List(1, 2, 3))(a => List(a, a * 10)) // res1: List[Int] = List(1, 10, 2, 20, 3, 30)
 
   Monad[Vector].flatMap(Vector(1, 2, 3))(a => Vector(a, a * 10)) // res2: Vector[Int] = Vector(1, 10, 2, 20, 3, 30)
+  import cats.syntax.flatMap._
+  import cats.syntax.functor._ // for flatMap
+  def sumSquare[F[_]: cats.Monad](a: F[Int], b: F[Int]): F[Int] =
+    //a.flatMap(x => b.map(y => x * x + y * y))
+    for {
+      aa <- a
+      bb <- b
+    } yield aa * bb
+  import cats.instances.list._
+  import cats.instances.option._ // for Monad
+
+  sumSquare(Option(3), Option(4)) //res8: Option[Int] = Some(25)
+  sumSquare(List(1, 2, 3), List(4, 5)) // res9: List[Int] = List(17, 26, 20, 29, 25, 34)
   // ----------------------- monads in cats ----------------------- //
 }
