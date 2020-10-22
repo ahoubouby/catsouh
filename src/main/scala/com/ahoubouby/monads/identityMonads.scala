@@ -1,11 +1,14 @@
 package com.ahoubouby.monads
 
-import cats.{ Id, Monad }
-import cats.syntax.flatMap._
 import cats.syntax.applicative._
+import cats.syntax.flatMap._
 import cats.syntax.functor._
+import cats.{ Id, Monad }
 
 object identityMonads extends App {
+  def pure[A](value: A): Id[A]                               = value
+  def map[A, B](initial: Id[A])(func: A => B): Id[B]         = func(initial)
+  def flatMap[A, B](initial: Id[A])(func: A => Id[B]): Id[B] = func(initial)
   def sumSquare[F[_]: Monad](a: F[Int], b: F[Int]): F[Int] =
     for {
       aa <- a
