@@ -144,3 +144,6 @@ Monad extends the Applicative type class with a new function flatten. Flatten ta
 The name flatten should remind you of the functions of the same name on many classes in the standard library.
 # FlatMap
 flatMap is often considered to be the core function of Monad, and Cats follows this tradition by providing implementations of flatten and map derived from flatMap and pure.
+---
+# MonadError
+Cats provides an addi􏰀onal type class called MonadError that abstracts over Either-like data types that are used for error handling. MonadError provides extra opera􏰀ons for raising and handling errors.
