@@ -32,9 +32,8 @@ object either extends App {
   //res3:  Either[NumberFormatException,Int] = Left(java.lang.
   //     NumberFormatException: For input string: "foo")
 
-  Either.catchNonFatal(sys.error("Badness")).recover {
-    case str: String => -1
-  }
+  Either.catchNonFatal(sys.error("Badness"))
+
   //res4: : Either[Throwable,Nothing] = Left(java.lang.RuntimeException:
   //Badness)
   Either.fromTry(scala.util.Try("foo".toInt))
