@@ -25,4 +25,6 @@ object errorMonad extends App {
     case other     => monadError.raiseError("It's not ok")
   })
 
+  monadError.ensure(success)("Number too low!")(_ > 1000)
+
 }
