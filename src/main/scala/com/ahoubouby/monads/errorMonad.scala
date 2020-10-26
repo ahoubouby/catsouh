@@ -12,8 +12,11 @@ trait ErrorMonad[F[_], E] extends Monad[F] {
 
 object errorMonad extends App {
   import cats.MonadError
+  import cats.implicits.catsSyntaxApplicativeErrorId
   import cats.instances.either._
 
+  import scala.util.Try
+  import cats.instances.try_._ // for MonadError
   type ErrorOr[A] = Either[String, A]
   val monadError = MonadError[ErrorOr, String]
   val success    = monadError.pure(42)
@@ -22,9 +25,12 @@ object errorMonad extends App {
   println(failure)
   monadError.handleErrorWith(failure)({
     case "Badness" => monadError.pure("It's ok")
-    case other     => monadError.raiseError("It's not ok")
+    case _         => monadError.raiseError("It's not ok")
   })
 
   monadError.ensure(success)("Number too low!")(_ > 1000)
+
+  val exn: Throwable = new RuntimeException("It's all gone wrong")
+  exn.raiseError[Try, Int]
 
 }
