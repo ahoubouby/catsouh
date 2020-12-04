@@ -147,3 +147,20 @@ flatMap is often considered to be the core function of Monad, and Cats follows t
 ---
 # MonadError
 Cats provides an addi􏰀onal type class called MonadError that abstracts over Either-like data types that are used for error handling. MonadError provides extra opera􏰀ons for raising and handling errors.
+---
+#Monad Eval
+cats.Eval is a monad that allows us to abstract over different models of eval- ua􏰄on. We typically hear of two such models: eager and lazy. Eval throws in a further dis􏰀nc􏰀on of whether or not a result is memoized.
+### what's Eager, Lazy, Memoized.
+Eager computa􏰀ons happen immediately whereas lazy computa􏰀ons happen on access. Memoized computa􏰀ons are run once on first access, a􏰁er which the results are cached.
+## Eval’s Models of Evalua􏰀on
+
+Eval has three subtypes: Now, Later, and Always. We construct these with three constructor methods, which create instances of the three classes and return them typed as Eval:
+````scala
+import cats.Eval
+val now = Eval.now(math.random + 1000)
+// now: cats.Eval[Double] = Now(1000.3579280134779)
+val later = Eval.later(math.random + 2000)
+// later: cats.Eval[Double] = cats.Later@359ba169
+val always = Eval.always(math.random + 3000)
+// always: cats.Eval[Double] = cats.Always@6765a7a7
+````
